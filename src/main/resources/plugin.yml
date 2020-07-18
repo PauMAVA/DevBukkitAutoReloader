@@ -1,0 +1,8 @@
+name: DevBukkitAutoReloader
+version: 1.0
+main: me.PauMAVA.DBAR.DBAR
+api-version: 1.16
+
+commands:
+  dbarpass:
+    description: Changes the current DBAR password. Must be executed from console.
