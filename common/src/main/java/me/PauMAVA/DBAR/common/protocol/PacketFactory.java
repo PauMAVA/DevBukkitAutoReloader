@@ -3,7 +3,7 @@ package me.PauMAVA.DBAR.common.protocol;
 public class PacketFactory {
 
     public static Packet buildPacket(byte[] data) throws ProtocolException {
-        Packet packet = buildPacketFromClass(PacketType.getByCode(data[3]));
+        Packet packet = buildPacketFromClass(PacketType.getByCode(data[2]));
         if (packet == null) {
             throw new ProtocolException("Unable to determine packet type!");
         }

@@ -6,7 +6,9 @@ import me.PauMAVA.DBAR.events.EventListener;
 import me.PauMAVA.DBAR.network.Listener;
 import me.PauMAVA.DBAR.security.PasswordManager;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -50,7 +52,12 @@ public class DBAR extends JavaPlugin {
     }
 
     public void reloadServer() {
-        getServer().reload();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                getServer().reload();
+            }
+        }.runTaskLater(this, 20);
     }
 
     public void logInfo(String message) {

@@ -69,13 +69,13 @@ public abstract class Packet implements Serializable {
         return concatArrays(header, new byte[]{packetType}, packetParameter, packetData, packetCheckSum);
     }
 
-    void validate(byte[] data, PacketType expectedType, PacketParameter... expectedParam) throws ProtocolException {
+    void validate(byte[] data, PacketType expectedType, PacketParameter... expectedParam) throws ProtocolException  {
         if (!Arrays.equals(subArray(data, 0, 1), DEFAULT_HEADER)) {
               throw new ProtocolException("Invalid packet header! Expected: " + Arrays.toString(DEFAULT_HEADER) +
                       ", Received: " + Arrays.toString(subArray(data, 0, 1)));
         }
-        PacketType currentType = PacketType.getByCode(data[3]);
-        PacketParameter currentParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        PacketType currentType = PacketType.getByCode(data[2]);
+        PacketParameter currentParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (currentType != expectedType) {
             throw new ProtocolException("Invalid packet type! Expected: " + expectedType.getCode() +
                     ", Received: " + (currentType == null ? null : currentType.getCode()));
@@ -84,12 +84,16 @@ public abstract class Packet implements Serializable {
             throw new ProtocolException("Invalid packet parameter! Expected: " + Arrays.deepToString(expectedParam) +
                     ", Received: " + (currentParameter == null ? null : Arrays.toString(currentParameter.getData())));
         }
+        /* TODO Fix checksum comparison
         long expectedChecksum = crc32(subArray(data, 0, data.length - 9));
         byte[] currentChecksum = subArray(data, data.length - 8, data.length - 1);
-        if (expectedChecksum != bytesToLong(currentChecksum)) {
+        System.out.println("Full data: " + bytesToPrettyBinaryString(data));
+        System.out.println("Non checksum part: " + bytesToPrettyBinaryString(subArray(data, 0, data.length - 9)));
+        System.out.println("Checksum part: " + bytesToPrettyBinaryString(subArray(data, data.length - 8, data.length - 1)));
+        if (!Arrays.equals(currentChecksum, longToBytes(expectedChecksum))) {
             throw new ProtocolException("Invalid packet checksum! Expected: " + expectedChecksum + ", Received: " +
                     bytesToLong(currentChecksum));
-        }
+        }*/
     }
 
     public int length() {

@@ -7,11 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import static me.PauMAVA.DBAR.util.CryptUtils.sha256;
+import static me.PauMAVA.DBAR.common.util.CryptUtils.sha256;
 import static me.PauMAVA.DBAR.util.RandomUtils.randomLengthString;
 
 public class PasswordManager {

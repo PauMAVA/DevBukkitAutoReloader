@@ -1,5 +1,14 @@
 package me.PauMAVA.DBAR.maven;
 
+import me.PauMAVA.DBAR.common.network.DBARConnection;
+import me.PauMAVA.DBAR.common.protocol.Packet;
+import me.PauMAVA.DBAR.common.protocol.PacketCloseConnection;
+import me.PauMAVA.DBAR.common.protocol.PacketConnectionApprove;
+import me.PauMAVA.DBAR.common.protocol.PacketNewConnection;
+import me.PauMAVA.DBAR.common.protocol.PacketReloadServer;
+import me.PauMAVA.DBAR.common.protocol.PacketRequestPassword;
+import me.PauMAVA.DBAR.common.protocol.PacketSendPassword;
+import me.PauMAVA.DBAR.common.protocol.ProtocolException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,6 +19,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import static me.PauMAVA.DBAR.common.util.CryptUtils.sha256;
 
 @Mojo(name = "request-reload")
 public class RequestReloadMojo extends AbstractMojo {
@@ -35,6 +46,7 @@ public class RequestReloadMojo extends AbstractMojo {
         }
         try {
             socket = new Socket(address, port);
+            requestReload(socket);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,5 +54,31 @@ public class RequestReloadMojo extends AbstractMojo {
 
     private InetAddress toInetAddress(String s) throws UnknownHostException {
         return InetAddress.getByName(s);
+    }
+
+    private void requestReload(Socket socket) {
+        try (DBARConnection connection = new DBARConnection(socket)) {
+            connection.writePacket(new PacketNewConnection());
+            Packet read = connection.readPacket();
+            if (!(read instanceof PacketRequestPassword)) {
+                throw new ProtocolException("Expected packet request password. Received: " + read);
+            }
+            connection.writePacket(new PacketSendPassword(sha256(password)));
+            read = connection.readPacket();
+            if (!(read instanceof PacketConnectionApprove)) {
+                throw new ProtocolException("Expected packet connection approve. Received: " + read);
+            } else if (!((PacketConnectionApprove) read).isAccepted()) {
+                throw new ProtocolException("Remote host refused the connection! Is the password correct?");
+            }
+            connection.writePacket(new PacketReloadServer());
+            read = connection.readPacket();
+            if (!(read instanceof PacketCloseConnection)) {
+                throw new ProtocolException("Expected packet close connection. Received: " + read);
+            } else {
+                getLog().info((((PacketCloseConnection) read).isSuccess() ? "Server reload successful!" : "Server reload failed!"));
+            }
+        } catch (IOException | ProtocolException e) {
+            e.printStackTrace();
+        }
     }
 }

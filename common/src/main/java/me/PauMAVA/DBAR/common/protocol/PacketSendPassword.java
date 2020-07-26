@@ -25,11 +25,11 @@ public class PacketSendPassword extends Packet {
     @Override
     public void deserialize(byte[] data) throws ProtocolException {
         validate(data, PacketType.SEND_PASSWORD, PacketParameter.NO_PARAM);
-        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (packetParameter != null) {
             super.setParameter(packetParameter);
         }
-        byte[] passwordHash = subArray(data, 8, data.length - 9);
+        byte[] passwordHash = subArray(data, 7, data.length - 9);
         super.setPacketData(passwordHash);
         this.passwordHash = new String(passwordHash, StandardCharsets.UTF_8);
     }

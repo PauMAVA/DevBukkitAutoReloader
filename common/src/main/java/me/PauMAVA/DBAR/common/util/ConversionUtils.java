@@ -66,4 +66,37 @@ public class ConversionUtils {
         return checksum.getValue();
     }
 
+    public static String byteToBinaryString(byte b) {
+        StringBuilder sb = new StringBuilder("00000000");
+        for (int bit = 0; bit < 8; bit++) {
+            if (((b >> bit) & 1) > 0) {
+                sb.setCharAt(7 - bit, '1');
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String bytesToBinaryString(byte[] bytes) {
+        StringBuilder bytesString = new StringBuilder();
+        for (byte b: bytes) {
+            bytesString.append(byteToBinaryString(b));
+        }
+        return bytesString.toString();
+    }
+
+    public static String bytesToPrettyBinaryString(byte [] bytes) {
+        int j = 0;
+        StringBuilder sb = new StringBuilder();
+        String binaryString = bytesToBinaryString(bytes);
+        for (int i = 0; i < binaryString.length(); i++) {
+            sb.append(binaryString.charAt(i));
+            j++;
+            if (j == 8) {
+                sb.append(" ");
+                j = 0;
+            }
+        }
+        return sb.toString();
+    }
+
 }

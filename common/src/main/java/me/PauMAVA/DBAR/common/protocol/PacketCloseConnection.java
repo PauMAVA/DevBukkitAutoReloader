@@ -23,12 +23,12 @@ public class PacketCloseConnection extends Packet {
     @Override
     public void deserialize(byte[] data) throws ProtocolException {
         validate(data, PacketType.CONNECTION_CLOSE, PacketParameter.SUCCESS, PacketParameter.FAILURE);
-        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (packetParameter != null) {
             super.setParameter(packetParameter);
         }
         super.setPacketData(new byte[0]);
-        isSuccess = packetParameter == PacketParameter.CONNECTION_ACCEPTED;
+        isSuccess = packetParameter == PacketParameter.SUCCESS;
     }
 
     public boolean isSuccess() {

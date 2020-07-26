@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static me.PauMAVA.DBAR.common.util.ConversionUtils.bytesToPrettyBinaryString;
+
 public class DBARConnection implements Closeable {
 
     private final Socket socket;
@@ -32,11 +34,16 @@ public class DBARConnection implements Closeable {
 
     public void writePacket(Packet packet) throws IOException {
         dout.writeInt(packet.length());
-        dout.write(packet.serialize());
+        byte[] buffer = packet.serialize();
+        dout.write(buffer);
     }
 
     @Override
-    public void close() throws IOException {
-        socket.close();
+    public void close() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

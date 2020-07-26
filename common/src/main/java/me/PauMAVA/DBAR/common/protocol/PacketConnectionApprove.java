@@ -23,7 +23,7 @@ public class PacketConnectionApprove extends Packet {
     @Override
     public void deserialize(byte[] data) throws ProtocolException {
         validate(data, PacketType.CONNECTION_ACCEPT, PacketParameter.CONNECTION_ACCEPTED, PacketParameter.CONNECTION_DENIED);
-        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (packetParameter != null) {
             super.setParameter(packetParameter);
         }

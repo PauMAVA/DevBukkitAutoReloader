@@ -1,13 +1,11 @@
 package me.PauMAVA.DBAR.common.protocol;
 
-import java.util.Arrays;
-
 import static me.PauMAVA.DBAR.common.util.ConversionUtils.subArray;
 
-public class PacketRequestPassword extends Packet {
+public class PacketNewConnection extends Packet {
 
-    public PacketRequestPassword() {
-        super(PacketType.REQUEST_PASSWORD, PacketParameter.NO_PARAM);
+    public PacketNewConnection() {
+        super(PacketType.REQUEST_CONNECTION, PacketParameter.NO_PARAM);
     }
 
     @Override
@@ -17,12 +15,11 @@ public class PacketRequestPassword extends Packet {
 
     @Override
     public void deserialize(byte[] data) throws ProtocolException {
-        validate(data, PacketType.REQUEST_PASSWORD, PacketParameter.NO_PARAM);
-        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        validate(data, PacketType.REQUEST_CONNECTION, PacketParameter.NO_PARAM);
+        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (packetParameter != null) {
             super.setParameter(packetParameter);
         }
         super.setPacketData(new byte[0]);
     }
-
 }

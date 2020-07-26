@@ -1,4 +1,4 @@
-package me.PauMAVA.DBAR.util;
+package me.PauMAVA.DBAR.common.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

@@ -10,13 +10,13 @@ public class PacketReloadServer extends Packet {
 
     @Override
     public byte[] serialize() {
-        return new byte[0];
+        return toByteArray();
     }
 
     @Override
     public void deserialize(byte[] data) throws ProtocolException {
         validate(data, PacketType.SERVER_RELOAD, PacketParameter.NO_PARAM);
-        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 4, 7));
+        PacketParameter packetParameter = PacketParameter.getByData(subArray(data, 3, 6));
         if (packetParameter != null) {
             super.setParameter(packetParameter);
         }
